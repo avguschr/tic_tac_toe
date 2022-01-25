@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="main" id="app" v-cloak>
-        <div class="container">
+        <div class="container pt-5">
             <div v-if="!field.size" class="mb-3">
                 <h5>Укажите размер поля</h5>
                 <input class="form-control mb-1" v-model="size" type="text">
@@ -36,10 +36,15 @@
             <div v-if="user1.name && field.size && !field.show" class="mb-3">
                 <button class="btn btn-primary" @click="field.show=true">Начать игру</button>
             </div>
-            <div v-if="field.show" v-for="(item, index) in Math.pow(field.size, 2)" class="field d-inline">
-                    <input @click="move(index), checkWinner(index)" v-model="moves[index]" :id="'cell' + (index + 1)" class="cell" type="text" readonly>
-                <br v-if="(index + 1) % field.size === 0">
+            <div class="text-center">
+                <div>
+                    <div v-if="field.show" v-for="(item, index) in Math.pow(field.size, 2)" class="field d-inline">
+                        <input @click="move(index), checkWinner(index)" v-model="moves[index]" :id="'cell' + (index + 1)" class="cell fs-2" type="text" readonly>
+                    <br v-if="(index + 1) % field.size === 0">
+                </div>
+                </div>
             </div>
+            
     </div>
 </body>
 </html>

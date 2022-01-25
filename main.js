@@ -4,14 +4,14 @@ Vue.createApp({
         size: '',
         current: 1,
         single: true,
-        field: {size: 9, show: true},
+        field: {size: 3, show: true},
         name1: '',
         name2: '',
-        user2: {},
+        user2: {name: 'Opponent', role: 0},
         user1: {role: 1},
         currentCell: '',
         moves: [],
-        la: []
+        result: {}
     }),
 
     methods: {
@@ -29,22 +29,74 @@ Vue.createApp({
             }
         },
 
-        checkWinner(inx) {
+        checkMainDiagonal() {
             const arr = []
-            for (let i = 0; i < Math.pow(this.field.size, 2); i += this.field.size.length) {
-                for (let j = 0; j < Math.pow(this.field.size, 2); j++) {
-                    arr.push(this.moves[i + j])
-                }
-
+            const arr2 = []
+            for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
+                arr.push(this.moves[i])
             }
+            for(let i = 0; i < arr.length; i+=this.field.size + 1) {
+                arr2.push(arr[i])
+            }
+            if (arr2.reduce((a, b) => (a === b) ? a : NaN)) {
+                alert('Победа')
+            }
+        },
 
+        checkSideDiagonal() {
+            const arr = []
+            for(let i = this.field.size - 1; i < Math.pow(this.field.size, 2) - this.field.size + 1; i += this.field.size - 1 ) {
+                arr.push(this.moves[i])
+                }
+                if (arr.reduce((a, b) => (a === b) ? a : NaN)) {
+                    alert('Победа')
+                }
+        },
 
+        checkHorizontal() {
+            const arr = []
+            for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
+                arr.push(this.moves[i])
+            }
             console.log(arr)
+            let subarr = []
+            for (let i = 0; i < Math.ceil(Math.pow(this.field.size, 2)/this.field.size); i++){
+                subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size)
+            }
+            for (let i = 0; i < subarr.length; i++) {
+                if (subarr[i].reduce((a, b) => (a === b) ? a : NaN)) {
+                    alert('Победа')
+                }
+            }
+        },
+
+        checkVertical() {
+            const arr = []
+            for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
+                arr.push(this.moves[i])
+            }
+            console.log(arr)
+            let subarr = []
+            for (let i = 0; i < Math.ceil(Math.pow(this.field.size, 2)/this.field.size); i++){
+                subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size)
+            }
+            subarr = subarr[0].map((col, i) => subarr.map(row => row[i]))
+            for (let i = 0; i < subarr.length; i++) {
+                if (subarr[i].reduce((a, b) => (a === b) ? a : NaN)) {
+                    alert('Победа')
+                }
+            }
+        },
+
+        checkWinner(inx) {
+           this.checkMainDiagonal()
+           this.checkSideDiagonal()
+           this.checkHorizontal()
+           this.checkVertical()
         },
 
         addSecondPlayer() {
             this.addName(this.user2, this.name2)
-            this.user2.role = 0
         },
 
         move(i) {
