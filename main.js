@@ -4,10 +4,10 @@ Vue.createApp({
         size: '',
         current: 1,
         single: true,
-        field: {size: 3, show: true},
+        field: {},
         name1: '',
         name2: '',
-        user2: {name: 'Opponent', role: 0},
+        user2: {role: 0},
         user1: {role: 1},
         currentCell: '',
         moves: [],
@@ -61,7 +61,7 @@ Vue.createApp({
             console.log(arr)
             let subarr = []
             for (let i = 0; i < Math.ceil(Math.pow(this.field.size, 2)/this.field.size); i++){
-                subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size)
+                subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size);
             }
             for (let i = 0; i < subarr.length; i++) {
                 if (subarr[i].reduce((a, b) => (a === b) ? a : NaN)) {
@@ -99,12 +99,35 @@ Vue.createApp({
             this.addName(this.user2, this.name2)
         },
 
-        move(i) {
-            this.currentCell = this.current ?  'X' : '0'
-            if (!this.moves[i]) {
-                this.moves[i] = this.currentCell
+        move(i) { 
+            if (!this.single) {
+                this.currentCell = this.current ?  'X' : '0'
+                if (!this.moves[i]) {
+                    this.moves[i] = this.currentCell
+                    this.current = this.current ?  0 : 1
+                }
+            } else {
+                this.currentCell = 'X'
+                if (!this.moves[i]) {
+                    if (this.current) {
+                        this.moves[i] = this.currentCell
+                        this.current = this.current ?  0 : 1
+                    } 
+                    if(!this.current) {
+                        let index = Math.floor(Math.random() * Math.pow(this.field.size, 2))
+                        this.currentCell = '0'
+
+                            if (!this.moves[index]) {
+                                    this.moves[index] = this.currentCell
+                                    this.currentCell = 'X'
+                            }  
+                       
+                    }
+                   
+                }
                 this.current = this.current ?  0 : 1
             }
+
         }
 
     }
