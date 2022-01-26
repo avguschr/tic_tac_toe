@@ -57,12 +57,14 @@ Vue.createApp({
             this.end = true
 
             const secondPlayer = this.user2.name ? this.user2.name : 'компьютер'
-            this.result = 'Победил' + (this.currentCell === 'X' ? this.user1.name  :  secondPlayer)
+            this.result = 'Победил ' + (this.currentCell === 'X' ? this.user1.name  :  secondPlayer)
         },
 
         checkSideDiagonal() {
             const arr = []
-            for(let i = this.field.size - 1; i < Math.pow(this.field.size, 2) - this.field.size + 1; i += this.field.size - 1 ) {
+            for(let i = this.field.size - 1; 
+                i < Math.pow(this.field.size, 2) - this.field.size + 1; 
+                i += this.field.size - 1 ) {
                 arr.push(this.moves[i])
                 }
                 if (arr.reduce((a, b) => (a === b) ? a : NaN)) {
