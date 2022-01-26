@@ -21,14 +21,20 @@
             <div v-if="!field.size" class="mb-3">
                 <h5>Укажите размер поля</h5>
                 <input class="form-control mb-1" v-model="size" type="number" min="3" max="6">
-                <button class="btn btn-primary" @click="choiceSize">Выбрать размер</button>
+                <button class="btn btn-primary mb-1" @click="choiceSize">Выбрать размер</button>
+                <div v-if="size > 6" class="alert alert-danger" role="alert">
+                    Слишком много!
+                </div>
+                <div v-if="size && size < 3" class="alert alert-danger" role="alert">
+                    Слишком мало!
+                </div>
             </div>
             <div v-if="!user1.name" class="mb-3">
                 <h5>Имя игрока</h5>
                 <input class="form-control mb-1" v-model="name1" type="text">
                 <button class="btn btn-primary" @click="addName(user1, name1)">Добавить</button>
             </div>
-            <div v-if="!field.show" class="mb-3">
+            <div v-if="!field.show && !user2.name" class="mb-3">
                 <button class="btn btn-success" @click="single=!single">Играть вдвоем</button>
             </div>
             <div v-if="!user2.name && !single" class="mb-3">
@@ -36,9 +42,6 @@
                 <input class="form-control mb-1" v-model="name2" type="text">
                 <button class="btn btn-primary" @click="addSecondPlayer">Добавить</button>
             </div>
-<!--            <p>{{ field.size }}</p>-->
-<!--            <p>{{user1.name}}</p>-->
-<!--            <p>{{user2.name}}</p>-->
             <div v-if="user1.name && field.size && !field.show" class="mb-3">
                 <button class="btn btn-primary" @click="field.show=true">Начать игру</button>
             </div>

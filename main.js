@@ -1,4 +1,3 @@
-
 Vue.createApp({
     data: () => ({
         size: '',
@@ -47,18 +46,18 @@ Vue.createApp({
                 arr2.push(arr[i])
             }
             if (arr2.reduce((a, b) => (a === b) ? a : NaN)) {
-                this.getResult()
+                setTimeout(() => {
+                    this.getResult()
+                }, 1000)
+                return true
             }
         },
 
         getResult () {
-            setTimeout(() => {
-                const secondPlayer = this.user2.name ? this.user2.name : 'компьютер'
-                console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa    ' + this.current)
-                this.result = this.currentCell === 'X' ? this.user1.name  :  secondPlayer
-                this.end = true
-            }, 1000)
+            this.end = true
 
+            const secondPlayer = this.user2.name ? this.user2.name : 'компьютер'
+            this.result = 'Победил' + (this.currentCell === 'X' ? this.user1.name  :  secondPlayer)
         },
 
         checkSideDiagonal() {
@@ -68,7 +67,10 @@ Vue.createApp({
                 }
                 if (arr.reduce((a, b) => (a === b) ? a : NaN)) {
                     this.end = true
-                    this.getResult()
+                    setTimeout(() => {
+                        this.getResult()
+                    }, 500)
+                    return true
                 }
         },
 
@@ -77,14 +79,16 @@ Vue.createApp({
             for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
                 arr.push(this.moves[i])
             }
-            console.log(arr)
             let subarr = []
             for (let i = 0; i < Math.ceil(Math.pow(this.field.size, 2)/this.field.size); i++){
                 subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size);
             }
             for (let i = 0; i < subarr.length; i++) {
                 if (subarr[i].reduce((a, b) => (a === b) ? a : NaN)) {
-                    this.getResult()
+                    setTimeout(() => {
+                        this.getResult()
+                    }, 500)
+                    return true
                 }
             }
         },
@@ -94,7 +98,6 @@ Vue.createApp({
             for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
                 arr.push(this.moves[i])
             }
-            console.log(arr)
             let subarr = []
             for (let i = 0; i < Math.ceil(Math.pow(this.field.size, 2)/this.field.size); i++){
                 subarr[i] = arr.slice((i*this.field.size), (i*this.field.size) + this.field.size)
@@ -102,8 +105,52 @@ Vue.createApp({
             subarr = subarr[0].map((col, i) => subarr.map(row => row[i]))
             for (let i = 0; i < subarr.length; i++) {
                 if (subarr[i].reduce((a, b) => (a === b) ? a : NaN)) {
-                    this.getResult()
+                    setTimeout(() => {
+                        this.getResult()
+                    }, 500)
+                    return true
                 }
+            }
+        },
+
+        playWithComputer(i) {
+            this.currentCell = this.current ?  'X' : '0'
+            
+            if (this.current && !this.moves[i]) {
+                this.moves[i] = this.currentCell
+                this.checkWinner()
+                if(this.checkWinner()) {
+                    return
+                }
+                this.current = this.current ?  0 : 1
+                this.currentCell = this.current ?  'X' : '0'
+                
+            }
+            if (!this.current) {
+                console.log(this.current)
+                let index = 0
+                while(true) {
+                for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
+                    index = Math.floor(Math.random() * Math.pow(this.field.size, 2))
+                    if (!this.moves[index]) {
+                        console.log(this.moves[index])
+                        this.moves[index] = this.currentCell
+                        this.checkWinner()
+                        this.current = this.current ?  0 : 1
+                            return    
+                    }
+                     
+                } 
+            }
+            }
+            
+        },
+
+        playWithPerson(i) {
+            this.currentCell = this.current ?  'X' : '0'
+            if (!this.moves[i]) {
+                this.moves[i] = this.currentCell
+                this.current = this.current ?  0 : 1
             }
         },
 
@@ -112,6 +159,11 @@ Vue.createApp({
            this.checkSideDiagonal()
            this.checkHorizontal()
            this.checkVertical()
+           if (this.checkMainDiagonal() || this.checkSideDiagonal() || this.checkHorizontal() || this.checkVertical()) return true
+           if (!this.result && this.moves.filter(move => move !== undefined).length === Math.pow(this.field.size, 2)) {
+               this.result = 'Ничья'
+               this.end = true
+           }
         },
 
         addSecondPlayer() {
@@ -119,44 +171,11 @@ Vue.createApp({
         },
 
         move(i) {
-            console.log('Длина ' + this.moves.length)
-            if (this.moves.length === Math.pow(this.field.size, 2) && !this.result) {
-                this.result = 'Ничья'
-                this.end = true
-            }
-            console.log(this.current)
                 if (!this.single) {
-                    this.currentCell = this.current ?  'X' : '0'
-                    if (!this.moves[i]) {
-                        this.moves[i] = this.currentCell
-                        this.current = this.current ?  0 : 1
-                    }
+                    this.playWithPerson(i)
+                    this.checkWinner()
                 } else {
-                    this.currentCell = 'X'
-                    this.current = 1
-                    if (!this.moves[i]) {
-                        if (this.current) {
-                            this.moves[i] = this.currentCell
-                            this.checkWinner()
-                        }
-                            this.current = 0
-                            let index = 0
-                            this.currentCell = '0'
-                            for (let i = 0; i < Math.pow(this.field.size, 2); i++) {
-                                index = Math.floor(Math.random() * Math.pow(this.field.size, 2))
-                                if (!this.moves[index]) {
-                                    this.moves[index] = this.currentCell
-                                    this.checkWinner()
-                                    this.currentCell = 'X'
-                                    break
-                                }
-                            }
-                            console.log(this.current)
-
-
-
-                    }
-                    this.current = 1
+                    this.playWithComputer(i)
                 }
         }
 
